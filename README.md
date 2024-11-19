@@ -5,7 +5,7 @@ Structured Error is a little library to help build "structured" errors. For our 
 ## Example
 
 ```go
-maker := structrederror.New()
+maker := structurederror.New()
 err := maker("error message here", "key", "value", someFuncThatReturnsAnErrorArg())
 ```
 
@@ -33,4 +33,34 @@ func ParseTheThing(someImput string) structurederror.ErrorArg {
 
 err := maker("some error", ParseTheThing("some input"))
 // err == "some error - parserOutput: some input"
+```
+
+## Options
+
+The structured error maker can be configured with options. Below are the available options.
+
+### WithDelimiter
+
+**WithDelimiter** allows you to change the delimiter used between key/value pairs. The default value is "-".
+
+```go
+maker := structurederror.New(
+  structurederror.WithDelimiter(";;"),
+)
+```
+
+### WithSlog
+
+**WithSlog** will call the **Error()** method on a provided logger when the error is created. Here is an example.
+
+```go
+logger := slog.New(slog.Default().Handler())
+
+maker := structurederror.New(
+  structurederror.WithSlog(logger),
+)
+
+err := maker("some error", "key", "value")
+// This will output to stdout:
+// 2024/11/19 16:22:00 ERROR some error key=value
 ```

@@ -133,6 +133,10 @@ func WithDelimiter(delimiter string) ErrorMakerOption {
 	}
 }
 
+/*
+WithSlog tells the maker to call the provided logger Error method, using Args
+as key value pairs in the log. This happens when you create the error.
+*/
 func WithSlog(logger *slog.Logger) ErrorMakerOption {
 	return func(se *StructuredError) {
 		se.Logger = logger
