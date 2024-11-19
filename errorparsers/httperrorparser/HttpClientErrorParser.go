@@ -3,8 +3,6 @@ package httperrorparser
 import (
 	"io"
 	"net/http"
-	"strconv"
-	"strings"
 
 	"github.com/adampresley/structurederror"
 )
@@ -20,7 +18,7 @@ type Parser struct {
 
 type Option func(*Parser)
 
-func Parse(resp *http.Response, options ...Option) structurederror.ErrorArg {
+func Parse(resp *http.Response, options ...Option) []structurederror.ErrorArg {
 	parser := &Parser{
 		IncludeStatus:       false,
 		IncludeResponseBody: false,
@@ -45,24 +43,19 @@ func WithResponseBody() Option {
 	}
 }
 
-func (p *Parser) Parse(resp *http.Response) structurederror.ErrorArg {
-	var (
-		message strings.Builder = strings.Builder{}
+func (p *Parser) Parse(resp *http.Response) []structurederror.ErrorArg {
+	result := []structurederror.ErrorArg{}
+
+	result = append(
+		result,
+		structurederror.ErrorArg{Key: "statusCode", Value: resp.StatusCode},
 	)
 
-	result := structurederror.ErrorArg{
-		Key: Key,
-	}
-
-	message.WriteString("Status Code: ")
-	message.WriteString(strconv.Itoa(resp.StatusCode))
-	result.Value = message.String()
-
 	if p.IncludeStatus {
-		message.WriteString(", Status: ")
-		message.WriteString(resp.Status)
-
-		result.Value = message.String()
+		result = append(
+			result,
+			structurederror.ErrorArg{Key: "status", Value: resp.Status},
+		)
 	}
 
 	if p.IncludeResponseBody {
@@ -71,9 +64,10 @@ func (p *Parser) Parse(resp *http.Response) structurederror.ErrorArg {
 			return result
 		}
 
-		message.WriteString(", Body: ")
-		message.WriteString(string(b))
-		result.Value = message.String()
+		result = append(
+			result,
+			structurederror.ErrorArg{Key: "body", Value: string(b)},
+		)
 	}
 
 	return result

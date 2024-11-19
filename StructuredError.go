@@ -68,6 +68,8 @@ func New(options ...ErrorMakerOption) ErrorMaker {
 				for _, arg := range multipleArgs {
 					result.Args[arg.Key] = arg.Value
 				}
+
+				continue
 			}
 
 			if key == "" {

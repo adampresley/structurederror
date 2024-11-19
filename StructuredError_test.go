@@ -38,7 +38,7 @@ func TestStructuredError(t *testing.T) {
 		}
 	}
 
-	want := fmt.Errorf("example error ;; age: 123 ;; http response: Status Code: 500, Body: That didn't go well\n ;; key1: value1 ;; key2: value2")
+	want := fmt.Errorf("example error ;; age: 123 ;; body: That didn't go well\n ;; key1: value1 ;; key2: value2 ;; statusCode: 500")
 	got := maker("example error", "age", 123, httperrorparser.Parse(resp, httperrorparser.WithResponseBody()), f())
 
 	assert.Equal(t, want.Error(), got.Error())
