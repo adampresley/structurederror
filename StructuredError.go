@@ -7,6 +7,9 @@ import (
 	"strings"
 )
 
+/*
+StructuredError is a way to craft errors using similar semantics to slog.
+*/
 type StructuredError struct {
 	Message string
 	Args    map[string]any
@@ -23,6 +26,11 @@ type ErrorArg struct {
 type ErrorMaker func(message string, args ...any) *StructuredError
 type ErrorMakerOption func(*StructuredError)
 
+/*
+New creates a new error maker. An error maker is a function that accepts
+an error message and a series of arguments. Args can be either key/value
+pairs, or an ErrorArg struct. "Key" is expected to be "stringy".
+*/
 func New(options ...ErrorMakerOption) ErrorMaker {
 	return func(message string, args ...any) *StructuredError {
 		var (
