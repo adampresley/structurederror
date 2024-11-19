@@ -6,7 +6,8 @@ Structured Error is a little library to help build "structured" errors. For our 
 
 ```go
 maker := structurederror.New()
-err := maker("error message here", "key", "value", someFuncThatReturnsAnErrorArg())
+err := maker("error message here", "key", "value")
+// err == "error message here - key: value"
 ```
 
 ## Arguments
