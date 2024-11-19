@@ -87,3 +87,25 @@ err := maker("some error", "key", "value")
 // This will output to stdout:
 // 2024/11/19 16:22:00 ERROR some error key=value
 ```
+
+## Included Parsers
+
+Below are some included parsers that can add context to your error.
+
+### Http Client Error Parser
+This provides a function that takes an `*http.Response` and will break it down into a slice of ErrorArgs. By default it only includes the status code, but with options, you can include the status line and body.
+
+```go
+maker := structurederror.New()
+
+err := maker(
+  "some error", 
+  httpclientparser.Parse(
+    resp,
+    httpclientparser.WithStatus(),
+    httpclientparser.WithBody(),
+  ),
+)
+
+// err == "some error - body: HTTP response body goes here - status: 500 Internal Server Error - statusCode: 500"
+```
