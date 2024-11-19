@@ -64,6 +64,12 @@ func New(options ...ErrorMakerOption) ErrorMaker {
 				continue
 			}
 
+			if multipleArgs, ok := isErrorArgSlice(args[index]); ok {
+				for _, arg := range multipleArgs {
+					result.Args[arg.Key] = arg.Value
+				}
+			}
+
 			if key == "" {
 				key = fmt.Sprintf("%v", args[index])
 				continue
@@ -153,6 +159,16 @@ func isErrorArg(item any) (ErrorArg, bool) {
 
 	default:
 		return ErrorArg{}, false
+	}
+}
+
+func isErrorArgSlice(item any) ([]ErrorArg, bool) {
+	switch v := item.(type) {
+	case []ErrorArg:
+		return v, true
+
+	default:
+		return []ErrorArg{}, false
 	}
 }
 

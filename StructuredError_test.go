@@ -25,15 +25,21 @@ func TestStructuredError(t *testing.T) {
 		structurederror.WithSlog(logger),
 	)
 
-	f := func() structurederror.ErrorArg {
-		return structurederror.ErrorArg{
-			Key:   "key1",
-			Value: "value1",
+	f := func() []structurederror.ErrorArg {
+		return []structurederror.ErrorArg{
+			{
+				Key:   "key1",
+				Value: "value1",
+			},
+			{
+				Key:   "key2",
+				Value: "value2",
+			},
 		}
 	}
 
-	want := fmt.Errorf("example error ;; age: 123 ;; http response: Status Code: 500, Body: That didn't go well\n ;; key1: value1")
-	got := maker("example error", "age", 123, f(), httperrorparser.Parse(resp, httperrorparser.WithResponseBody()))
+	want := fmt.Errorf("example error ;; age: 123 ;; http response: Status Code: 500, Body: That didn't go well\n ;; key1: value1 ;; key2: value2")
+	got := maker("example error", "age", 123, httperrorparser.Parse(resp, httperrorparser.WithResponseBody()), f())
 
 	assert.Equal(t, want.Error(), got.Error())
 }

@@ -12,7 +12,7 @@ err := maker("error message here", "key", "value")
 
 ## Arguments
 
-Arguments are either key/value pairs, where the key can be coerced to a string type, or an ErrorArg. An ErrorArg is just a structure with key and value properties.
+Arguments are either key/value pairs, where the key can be coerced to a string type, an ErrorArg, or a slice of ErrorArgs. An ErrorArg is just a structure with key and value properties.
 
 ```go
 type ErrorArg struct {
@@ -34,6 +34,28 @@ func ParseTheThing(someImput string) structurederror.ErrorArg {
 
 err := maker("some error", ParseTheThing("some input"))
 // err == "some error - parserOutput: some input"
+```
+
+You can also use a slice of ErrorArg as an argument to StructuredError. Here is a sample.
+
+```go
+func ParseTheThings(someImput string) []structurederror.ErrorArg {
+  // parse the stuff
+  return []structurederror.ErrorArg{
+    {
+      Key: "key1",
+      Value: "value1",
+    },
+    {
+      Key: "key2",
+      Value: "value2",
+    },
+  }
+}
+
+err := maker("some error", ParseTheThings("some input"))
+// err == "some error - key1: value1 - key2: value2
+
 ```
 
 ## Options
